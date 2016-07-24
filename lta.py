@@ -1,6 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+'''
+Langton Ant (
+https://zh.wikipedia.org/wiki/%E5%85%B0%E9%A1%BF%E8%9A%82%E8%9A%81)
+in python
+'''
 import time
 
 import numpy as np
@@ -48,7 +53,7 @@ class AntWorld(WorldGUI):
     def init_status(self):
         # self.status = np.zeros((self.row, self.col), dtype=np.int)
         # self.status[0,0] = 1
-        self.status = asc_to_arr('./test2.txt',39,39)
+        self.status = asc_to_arr('./pattern/test2.txt',39,39)
 
     def update(self):
         y, x = self.ant.pos
