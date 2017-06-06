@@ -11,7 +11,7 @@ import time
 import numpy as np
 
 from gol import WorldGUI, World
-from asc2arr import asc_to_arr
+from utils import asc_to_arr
 
 class Ant(object):
     def __init__(self, pos, dire, mapsize):

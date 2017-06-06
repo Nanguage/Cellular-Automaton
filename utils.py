@@ -1,9 +1,12 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import numpy as np
+from numpy.fft import fft2, ifft2, fftshift
 
 def asc_to_arr(filename, row, col):
+    """
+    transform asc text file to numpy array
+    """
     with open(filename) as f:
         lines = f.readlines()
     result = []
@@ -27,3 +30,17 @@ def asc_to_arr(filename, row, col):
     result = np.array(result, dtype=np.int)
     return result
 
+
+def fft_convolve2d(x,y):
+    """
+    2D convolution, using FFT
+    borrowed from:
+      https://github.com/thearn/game-of-life/blob/master/lib/lib.py#L4
+    """
+    fr = fft2(x)
+    fr2 = fft2(np.flipud(np.fliplr(y)))
+    m,n = fr.shape
+    cc = np.real(ifft2(fr*fr2))
+    cc = np.roll(cc, - int(m / 2) + 1, axis=0)
+    cc = np.roll(cc, - int(n / 2) + 1, axis=1)
+    return cc
