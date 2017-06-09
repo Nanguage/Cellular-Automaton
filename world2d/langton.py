@@ -10,7 +10,7 @@ import time
 
 import numpy as np
 
-from gol import WorldGUI, World
+from conway import WorldGUI, World
 from utils import asc_to_arr
 
 class Ant(object):
@@ -33,7 +33,7 @@ class Ant(object):
         dy = np.sin(self.dir)
         dx = np.cos(self.dir)
         self.pos = (round(y-dy)%r, round(x+dx)%c)
-        print dy,dx,self.pos
+        print(dy,dx,self.pos)
 
     def backstep(self):
         y, x = self.pos
@@ -45,21 +45,22 @@ class Ant(object):
 
 class AntWorld(WorldGUI):
     '''Langton Ants'''
-    def __init__(self, size=(39,39)):
+    def __init__(self, partten, size=(39,39)):
         # self.ant = Ant((size[0]//2-1,size[1]//2-1), 'l', size)
         self.ant = Ant((size[0]//2-1,size[1]//2-1), -np.pi, size)
+        self.partten = partten
         super(AntWorld, self).__init__(size)
 
     def init_status(self):
         # self.status = np.zeros((self.row, self.col), dtype=np.int)
         # self.status[0,0] = 1
-        self.status = asc_to_arr('./pattern/test2.txt',39,39)
+        self.status = self.partten
 
     def update(self):
         y, x = self.ant.pos
         alive = self.status[y, x]
         print(self.loop_count)
-        print str(self.ant.pos) + ' ' + str(alive) + ' ' + str(self.ant.dir)
+        print(str(self.ant.pos) + ' ' + str(alive) + ' ' + str(self.ant.dir))
         if alive:
             self.ant.roate()
             self.status[y, x] = 0
@@ -75,7 +76,7 @@ class AntWorld(WorldGUI):
         y, x = self.ant.pos
         alive = self.status[y, x]
         print(self.loop_count)
-        print str(self.ant.pos) + ' ' + str(alive) + ' ' + str(self.ant.dir)
+        print(str(self.ant.pos) + ' ' + str(alive) + ' ' + str(self.ant.dir))
         if alive:
             self.status[y, x] = 0
             self.ant.roate()
@@ -88,7 +89,7 @@ class AntWorld(WorldGUI):
         super(AntWorld, self).run(update=self.update,limit=limit)
 
     def run_not_show(self, steps):
-        for i in xrange(steps): self.update()
+        for i in range(steps): self.update()
 
     def run_rev(self, limit):
         super(AntWorld, self).run(update=self.update_rev, limit=limit)
@@ -103,7 +104,8 @@ class AntWorld(WorldGUI):
 if __name__ == '__main__':
     # aw = AntWorld((60,60))
     # aw = AntWorld((5,5))
-    aw = AntWorld()
+    partten = asc_to_arr('../pattern/test2.txt',39,39)
+    aw = AntWorld(partten)
     aw.delay = 0.01
     # aw.go_then_back(700)
     aw.run_not_show(2000)

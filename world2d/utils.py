@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 
+import os
+
 import numpy as np
 from numpy.fft import fft2, ifft2, fftshift
+import imageio
 
 def asc_to_arr(filename, row, col):
     """
@@ -44,3 +47,10 @@ def fft_convolve2d(x,y):
     cc = np.roll(cc, - int(m / 2) + 1, axis=0)
     cc = np.roll(cc, - int(n / 2) + 1, axis=1)
     return cc
+
+
+def gen_gif(imgs, gif_path):
+    """ write a set of images to a gif file. """
+    with imageio.get_writer(gif_path, mode='I') as writer:
+        for img in imgs:
+            writer.append_data(img)

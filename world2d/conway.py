@@ -12,6 +12,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from utils import fft_convolve2d
+from utils import gen_gif
 
 
 class World(object):
@@ -23,7 +24,6 @@ class World(object):
     '''
 
     def __init__(self, size=(39,39), birth_rate=None):
-        self.delay = 0.1
         self.row = size[0]
         self.col = size[1]
         self.shape = size
@@ -95,19 +95,29 @@ class World(object):
         return num_alive_nb
 
 
-    def run(self, update=None, limit=None, output=True):
+    def run(self, limit=None, update=None,
+             output=True, delay=0.01, display=True):
+        """
+        run the world.
+        :limit: circle number limit
+        :output: print current circle number and world population or not
+        :delay: circle delay time 
+        :display: display world status or not
+        """
         c = 0
         while 1:
             c += 1
             if limit and c > limit: break
-            self.display()
-            if update is not None:
+            if update:
                 update()
             else:
                 self.update()
-            plt.pause(self.delay)
+            if display:
+                self.display()
+            if display and delay != 0:
+                plt.pause(delay)
             if output:
-                print("time:{}\tpopulation:{}".format(c, self.population))
+                print("{}\t{}".format(c, self.population))
     
     @property
     def population(self):
@@ -126,8 +136,26 @@ class WorldGUI(World):
         self._img_plot.set_data(self.status)
         plt.draw()
 
-        
+
+def make_a_movie(world, start=0, n=1000):
+    """ 
+    take a series of status of the world 
+    just like make a little movie about this world :)
+    """
+    photos = []
+    for i in range(start):
+        world.update()
+    for i in range(n):
+        photos.append(world.status)
+        world.update()
+    return photos
+
+
 if __name__ == '__main__':
-    # w = WorldGUI(size)
-    w = WorldGUI((150, 150), birth_rate=0.001)
-    w.run()
+    #w = WorldGUI((150, 150), birth_rate=0.0001)
+    w = World((150, 150), birth_rate=0.0001)
+    images = make_a_movie(w, start=1000, n=100)
+    gif_path = "./tmp/conway.gif"
+    gen_gif(images, gif_path)
+    #w.run(display=False, delay=0)
+    #w.run()
